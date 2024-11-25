@@ -8,7 +8,7 @@ export const gameConfig = {
   physics: {
     default: "arcade",
     arcade: {
-      gravity: { y: 300 }, // Asegura que los objetos caigan
+      gravity: { y: 300 }, 
       debug: false,
     },
   },

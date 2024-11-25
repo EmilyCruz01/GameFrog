@@ -42,18 +42,15 @@ export default class GameScene extends Phaser.Scene {
       Phaser.Input.Keyboard.KeyCodes.SPACE
     );
 
-    // Inicializar Web Workers
-    this.worker1 = new Worker("../js/workerScore.js"); // Worker de puntos
-    this.worker2 = new Worker("../js/workerObjects.js"); // Worker de hongos
-    this.worker3 = new Worker("../js/workerLive.js"); // Worker de objetos vidas
-    this.worker3 = new Worker("../js/workerNegative.js"); // Worker de objetos negativos
+    this.worker1 = new Worker("../js/workerScore.js"); 
+    this.worker2 = new Worker("../js/workerObjects.js"); 
+    this.worker3 = new Worker("../js/workerLive.js"); 
+    this.worker3 = new Worker("../js/workerNegative.js"); 
 
-    // Enviar mensajes a los Workers
     this.worker1.postMessage({ action: "start" });
     this.worker2.postMessage({ action: "start" });
     this.worker3.postMessage({ action: "start" });
 
-    // Recibir mensajes de los Workers
     this.worker1.onmessage = (e) => {
       if (e.data.action === "addPoints") {
         this.score += e.data.points;
@@ -77,7 +74,7 @@ export default class GameScene extends Phaser.Scene {
       }
     };
 
-    //this.input.keyboard.on("keydown-SPACE", this.jump, this);
+    
   }
 
   update() {
@@ -85,7 +82,6 @@ export default class GameScene extends Phaser.Scene {
       this.movePlayer();
       this.handleCollisions();
 
-      // Destruir objetos que ya han salido de la pantalla o que llegaron al suelo
       this.objectsGroup.getChildren().forEach((object) => {
         console.log(object.y);
         if (object.y >= 560) {
@@ -130,24 +126,24 @@ export default class GameScene extends Phaser.Scene {
 
   createObject(x, y) {
     let object = this.objectsGroup.create(x, y, "object");
-    object.setVelocityY(200); // Los hongos caen desde arriba
+    object.setVelocityY(200); 
     object.setCollideWorldBounds(true);
   }
 
   createNegativeObject(x, y, points) {
     let negativeObject = this.negativeObjectsGroup.create(x, y, "negative");
-    negativeObject.setVelocityY(200); // Los objetos negativos caen desde arriba
+    negativeObject.setVelocityY(200); 
     negativeObject.setCollideWorldBounds(true);
-    negativeObject.points = points; // Guardar los puntos que restan
+    negativeObject.points = points; 
   }
 
   hitObject(player, object) {
-    object.destroy(); // El hongo desaparece al tocarlo
+    object.destroy(); 
     this.worker1.postMessage({ action: "increaseScore" });
   }
 
   hitNegativeObject(player, object) {
-    this.lives--; // Restar una vida
+    this.lives--; 
     object.destroy();
     this.livesText.setText("Vidas: " + this.lives);
 
@@ -155,7 +151,6 @@ export default class GameScene extends Phaser.Scene {
       this.gameOver();
     }
 
-    // Restar puntos por el objeto negativo
     this.score -= object.points;
     this.scoreText.setText("Puntos: " + this.score);
   }
@@ -259,11 +254,11 @@ export default class GameScene extends Phaser.Scene {
   }
 
   restartGame() {
-    this.scene.restart(); // Reinicia la escena
-    this.gameOverFlag = false; // Resetear la bandera de fin del juego
-    this.score = 0; // Resetear puntaje
-    this.lives = 3; // Resetear vidas
-    this.scoreText.setText("Puntos: " + this.score); // Actualizar pantalla
-    this.livesText.setText("Vidas: " + this.lives); // Actualizar vidas en pantalla
+    this.scene.restart(); 
+    this.gameOverFlag = false; 
+    this.score = 0; 
+    this.lives = 3; 
+    this.scoreText.setText("Puntos: " + this.score); 
+    this.livesText.setText("Vidas: " + this.lives); 
   }
 }
